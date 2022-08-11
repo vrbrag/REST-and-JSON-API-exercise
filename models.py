@@ -14,12 +14,12 @@ class Cupcake(db.Model):
    flavor = db.Column(db.Text, nullable = False)
    size = db.Column(db.Text, nullable = False)
    rating = db.Column(db.Float, nullable = False)
-   image = db.Column(db.Text)
+   image = db.Column(db.Text, default = DEFAULT_IMG)
 
-   def image_url(self):
-      """Return image for cupcake"""
+   # def image_url(self):
+   #    """Return image for cupcake"""
 
-      return self.image or DEFAULT_IMG
+   #    return self.image or DEFAULT_IMG
 
 def connect_db(app):
    db.app = app
