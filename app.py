@@ -1,5 +1,5 @@
 """Flask app for Cupcakes"""
-from flask import Flask
+from flask import Flask, render_template, redirect, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
 from models import db, connect_db, Cupcake
 
@@ -16,3 +16,11 @@ toolbar = DebugToolbarExtension(app)
 
 connect_db(app)
 db.create_all()
+
+@app.route('/api/cupcakes')
+def list_all_cupcakes():
+   """Show list of all cupcakes"""
+
+   cupcakes = Cupcake.query.all()
+   serialized = [cupcake.serialize_cupcake() for cupcake in cupcakes]
+   return jsonify(cupcakes=serialized)
