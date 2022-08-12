@@ -1,4 +1,4 @@
-from unittest import TestCase
+from unittest import TestCase, skip
 
 from app import app
 from models import db, Cupcake
@@ -48,6 +48,7 @@ class CupcakeViewsTestCase(TestCase):
 
         db.session.rollback()
 
+    # @skip ('skip for now')
     def test_list_cupcakes(self):
         with app.test_client() as client:
             resp = client.get("/api/cupcakes")
@@ -67,6 +68,7 @@ class CupcakeViewsTestCase(TestCase):
                 ]
             })
 
+    # @skip ('skip for now')
     def test_get_cupcake(self):
         with app.test_client() as client:
             url = f"/api/cupcakes/{self.cupcake.id}"
@@ -84,6 +86,7 @@ class CupcakeViewsTestCase(TestCase):
                 }
             })
 
+    # @skip ('skip for now')
     def test_create_cupcake(self):
         with app.test_client() as client:
             url = "/api/cupcakes"
@@ -106,4 +109,40 @@ class CupcakeViewsTestCase(TestCase):
                 }
             })
 
+            # check that there are now 2 cupcakes in our db
             self.assertEqual(Cupcake.query.count(), 2)
+
+    # @skip ('skip for now')
+    def test_patch_cupcake(self):
+        with app.test_client() as client:
+            url = f"/api/cupcakes/{self.cupcake.id}"
+            resp = client.patch(url, json=CUPCAKE_DATA_2)
+
+            self.assertEqual(resp.status_code, 200)
+
+            self.assertEqual(resp.json, {
+                "cupcake": {
+                    "id": self.cupcake.id,
+                    "flavor": "TestFlavor2",
+                    "size": "TestSize2",
+                    "rating": 10,
+                    "image": "http://test.com/cupcake2.jpg"
+                }
+            })
+
+            # check that there is now 1 cupcakes in our db
+            self.assertEqual(Cupcake.query.count(), 1)
+
+    def test_delete_cupcake(self):
+        with app.test_client() as client:
+            url = f"/api/cupcakes/{self.cupcake.id}"
+            resp = client.delete(url)
+
+            self.assertEqual(resp.status_code, 200)
+
+            self.assertEqual(resp.json, { 
+                "message" : "Deleted"
+            })
+            
+            # check that there are now 0 cupcakes in our db
+            self.assertEqual(Cupcake.query.count(), 0)  
