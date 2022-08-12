@@ -1,7 +1,7 @@
 """Flask app for Cupcakes"""
 from crypt import methods
 import json
-from flask import Flask, render_template, redirect, jsonify, request
+from flask import Flask, render_template, jsonify, request
 from flask_debugtoolbar import DebugToolbarExtension
 from models import db, connect_db, Cupcake
 
@@ -18,6 +18,12 @@ app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 
 connect_db(app)
 db.create_all()
+
+@app.route('/')
+def route():
+   """Homepage"""
+   cupcakes = Cupcake.query.all()
+   return render_template('index.html', cupcakes=cupcakes)
 
 @app.route('/api/cupcakes')
 def list_all_cupcakes():
