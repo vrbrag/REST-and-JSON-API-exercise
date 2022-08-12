@@ -1,5 +1,6 @@
 """Flask app for Cupcakes"""
 from crypt import methods
+import json
 from flask import Flask, render_template, redirect, jsonify, request
 from flask_debugtoolbar import DebugToolbarExtension
 from models import db, connect_db, Cupcake
@@ -13,7 +14,7 @@ app.config['SQLALCHEMY_ECHO'] = True
 app.config['SECRET_KEY'] = 'secret'
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 
-toolbar = DebugToolbarExtension(app)
+# toolbar = DebugToolbarExtension(app)
 
 connect_db(app)
 db.create_all()
@@ -60,3 +61,12 @@ def update_cupcake(cupcake_id):
    db.session.add(cupcake)
    db.session.commit()
    return jsonify(cupcake=cupcake.serialize_cupcake())
+
+@app.route('/api/cupcakes/<int:cupcake_id>', methods=["DELETE"])
+def delete_cupcake(cupcake_id):
+   """Delete cupcake of the id passed"""
+
+   cupcake = Cupcake.query.get_or_404(cupcake_id)
+   db.session.delete(cupcake)
+   db.session.commit()
+   return jsonify(message = "Deleted")
